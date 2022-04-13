@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Rural Crypto Literature</title>
+
+	<style type="text/css">
+		.setBox {
+			display: flex;
+			margin: 0 auto;
+		}
+
+		.wrap {
+			margin: 0 auto;
+			min-width: 480px;
+			min-height: 480px;
+		}
+
+		.key {
+			display: flex;
+
+			width: 100%;
+			height: 50px;
+			margin-top: 10px;
+		}
+
+		.textarea {
+			display: flex;
+
+			width: 100%;
+			min-width: 480px;
+			height: 360px;
+			margin-top: 10px;
+
+
+		}
+
+		.textarea:focus {
+			background: #fdfdfd;
+			border: #ccc 1px solid
+		}
+
+		.buttons {
+			width: 90px;
+			height: 40px;
+			font-size: 20px;
+		}
+	</style>
+
+	<script type="text/javascript" src="js/aes.js"></script>
+
+
+	<script type="text/javascript">
+
+		function pr_encode() {
+			var encode_button = document.getElementById("encode");
+			encode_button.disabled = true;
+
+			var key_el = document.getElementById('key_field');
+			var content_el = document.getElementById('content_input');
+
+			var key = key_el.value;
+			var content = content_el.value
+			content_el.value = CryptoJS.AES.encrypt(content, key).toString();
+		}
+
+		function pr_decode() {
+			var decode_button = document.getElementById("decode");
+			decode_button.disabled = true;
+
+			var key_el = document.getElementById('key_field');
+			var content_el = document.getElementById('content_input');
+
+			var key = key_el.value;
+			var content = content_el.value
+			content_el.value = CryptoJS.AES.decrypt(content, key).toString(CryptoJS.enc.Utf8);
+		}
+
+	</script>
+
+</head>
+
+<body>
+
+	<script type="text/javascript">
+
+		window.onload = function () {
+			/*-- Common -------------------------------------------------------------------------*/
+			function txtCount(el) {
+				var val = el.value;
+				var eLen = val.length;
+				return eLen;
+			}
+
+			var encode_button = document.getElementById("encode");
+			var decode_button = document.getElementById("decode");
+			var clear_button = document.getElementById("clear");
+
+			var key_el = document.getElementById('key_field');
+			var content_el = document.getElementById('content_input');
+			/*-----------------------------------------------------------------------------------*/
+
+			/*-- Key -------------------------------------------------------------------------*/
+			function handleKeyChange(el) {
+				var key_count = txtCount(el);
+				// document.getElementById('test').innerHTML = key_count;
+
+				var content_count = txtCount(content_el);
+
+				if ((key_count > 0) && (content_count > 0)) {
+					encode_button.disabled = false;
+					decode_button.disabled = false;
+				} else {
+					encode_button.disabled = true;
+					decode_button.disabled = true;
+				}
+			}
+
+			key_el.addEventListener('input', function () {
+				handleKeyChange(this);
+			});
+
+			key_el.addEventListener('propertychange', function () {
+				handleKeyChange(this);
+			});
+			/*-----------------------------------------------------------------------------------*/
+
+			/*-- Content -------------------------------------------------------------------------*/
+			function handleContentChange(el) {
+				//document.getElementById('test').innerHTML = len
+
+				var content_count = txtCount(el);
+
+				if (content_count > 0) {
+					clear_button.disabled = false
+
+					var key_count = txtCount(key_el);
+
+					if (key_count > 0) {
+						encode_button.disabled = false;
+						decode_button.disabled = false
+					} else {
+						encode_button.disabled = true;
+						decode_button.disabled = true
+					}
+				} else {
+					encode_button.disabled = true;
+					decode_button.disabled = true;
+					clear_button.disabled = true
+				}
+			}
+
+
+			content_el.addEventListener('input', function () {
+				handleContentChange(this);
+			});
+
+			content_el.addEventListener('propertychange', function () {
+				handleContentChange(this);
+			});
+			/*-----------------------------------------------------------------------------------*/
+
+
+			/*-- Action -------------------------------------------------------------------------*/
+			document.getElementById('clear').addEventListener('click', function () {
+				content_el.value = "";
+				encode_button.disabled = true;
+				decode_button.disabled = true;
+				clear_button.disabled = true;
+				//document.getElementById('test').innerHTML = "check"
+			}, true)
+
+			document.getElementById('encode').addEventListener('click', function () {
+				pr_encode()
+			}, true)
+
+			document.getElementById('decode').addEventListener('click', function () {
+				pr_decode()
+			}, true)
+			/*-----------------------------------------------------------------------------------*/
+
+		}
+
+	</script>
+
+	<br />
+
+	<div class="setBox">
+
+		<div class="wrap">
+
+			<div class="key">
+
+				<input id="key_field" type="text" size="64" placeholder="paste decode key">
+			</div>
+
+			<br />
+
+			<div id="oper" class="oper">
+
+				<button type="button" class="buttons" id="encode" disabled="true">encode</button>
+				<button type="button" class="buttons" id="decode" disabled="true">decode</button>
+				<button type="button" class="buttons" id="clear" disabled="true">clear</button>
+
+				<!-- <div id="test"> a </div> -->
+			</div>
+
+			<br />
+
+			<div class="textarea">
+
+				<textarea id="content_input" class="content_input" cols="64" rows="40"
+					placeholder="paste encrypted content"></textarea>
+
+			</div>
+
+
+		</div>
+
+	</div>
+
+
+	<br />
+
+
+</body>
+
+</html>
